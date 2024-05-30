@@ -1,0 +1,274 @@
+﻿#tableData {
+    width: calc(100% - 400px);
+    min-height: 100vh;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    flex-wrap: wrap;
+    background: #b9692d;
+    border-radius: 10px;
+    margin: -20px 170px 40px 170px;
+    padding: 80px 30px;
+}
+
+#tableData .dataBlock {
+    position: relative;
+    width: calc(100% / 3 - 20px);
+    height: 25vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 5px;
+    border: #874310 solid 2px;
+    background: #ffd592;
+    margin: 10px;
+    transition: border ease 0.4s, margin ease 0.4s, width ease 0.4s;
+}
+
+#tableData .dataBlock:hover {
+    border: #ffd592aa solid 4px;
+    margin: 5px;
+    width: calc(100% / 3 - 10px);
+}
+
+#tableData .dataBlock form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#tableData .dataBlock div.imageBlock {
+    width: 100%;
+    display: flex;
+    background: #dddddd;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    flex-grow: 5;
+}
+
+#tableData .dataBlock p {
+    margin: 0;
+    box-sizing: content-box;
+    padding: 10px 20px;
+    margin: 0px;
+    font-weight: bold;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+#tableData .dataBlock div.imageBlock img {
+    height: 100%;
+    width: auto;
+}
+
+#tableData .dataBlock div.blockBackground {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+    transition: background-color ease 0.4s;
+}
+
+#tableData .dataBlock:hover div.blockBackground {
+    background-color: #fff4;
+}
+
+#tableData .dataBlock button {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: #0000;
+    border: none;
+    appearance: none;
+    z-index: 51;
+}
+
+#tableData div.divider {
+    width: calc(100% - 40px);
+    height: 1px;
+    background-color: #ffd592aa;
+    margin: 20px;
+}
+
+#tableData p.categoryTitle {
+    font-size: 2em;
+    font-weight: bold;
+    color: #fff;
+    margin-top: 0px;
+}
+
+
+#tableData select.sensorType {
+    display: flexbox;
+    width: 20%;
+    height: 40px;
+    font-size: 1em;
+    background-color: #ffd592;
+    padding-left: 10px;
+    border-radius: 10px;
+}
+
+#tableData .select-items {
+    padding: 10px 0px;
+}
+
+#tableData select.sensorType:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+#tableData label {
+    font-size: 1.5em;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+div.land {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+div.filterType {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    margin: 0px 10px;
+}
+
+div.filterType.close {
+    visibility: collapse;
+    width: 0;
+    margin: 0;
+}
+
+div.dataBlock p.name {
+    font-size: 1.5em;
+}
+
+div.dataBlock p.lastUpdate {
+    font-size: 0.8em;
+    font-weight: 100;
+}
+
+#dateFilter .inputBox {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 40px;
+    margin-top: 25px;
+    align-items: center;
+}
+
+#dateFilter .inputBox .input:focus ~ i {
+    height: 100%;
+}
+
+#dateFilter .inputBox .input:not(:placeholder-shown) ~ i {
+    height: 100%;
+}
+
+#dateFilter .inputBox .input {
+    appearance: none;
+    background-color: #0000;
+    border: none;
+    padding: 0px 10px;
+    width: 100%;
+    z-index: 3;
+    font-size: 1.2em;
+}
+
+#dateFilter .inputBox .input::-webkit-inner-spin-button {
+    appearance: none;
+}
+
+#dateFilter .inputBox .input:focus {
+    appearance: none;
+    border: none;
+    outline: none;
+}
+
+#dateFilter .inputBox .input:focus ~ .name {
+    top: -25px;
+    left: 5px;
+    color: #ffd592;
+    font-size: 1em;
+}
+
+div#dateFilter .inputBox .input:not(:placeholder-shown) ~ .name {
+    top: -25px;
+    left: 5px;
+    color: #ffd592;
+    font-size: 1em;
+}
+
+#dateFilter .inputBox .name {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    font-size: 1.2em;
+    transition: top 0.25s, left 0.25s, color 0.25s, font-size 0.25s;
+}
+
+
+
+#dateFilter .inputBox i {
+    position: absolute;
+    height: 2px;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+    background-color: #ffd592;
+    border-radius: 10px;
+    transition: height 0.25s ease;
+}
+
+#dateFilter .inputBox .date::-webkit-calendar-picker-indicator {
+    position: absolute;
+    right: 10px;
+}
+
+
+
+
+#fallTable {
+    display: flex;
+    margin: 20px 0px 0px 0px;
+    visibility: collapse;
+    width: 100%;
+}
+
+#fallTable table {
+    border-collapse: collapse;
+    font-size: 1.5em;
+    padding: 0px;
+    width: 100%;
+}
+
+#fallTable tr {
+    display: flex;
+    flex-direction: row;
+}
+
+#fallTable tr td {
+    border: #0002 solid 2px;
+    color: #fff;
+    width: calc(100% / 3);
+    text-align: center;
+}
+
+#fallTable tr:first-child td {
+    background: #ffd592;
+    color: #000;
+}

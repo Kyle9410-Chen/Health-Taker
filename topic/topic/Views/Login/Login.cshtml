@@ -1,0 +1,50 @@
+﻿<main>
+    <script>
+        window.onload = () => {
+            var status = parseInt(@TempData["Status"])
+            switch (status) {
+                case 2:
+                    newAlert({
+                        content: "Username or Password was wrong",
+                        behavior: {
+                            float: true
+                        }
+                    })
+                    break;
+                case 3:
+                    newAlert({
+                        content: "Username or Password was empty",
+                        behavior: {
+                            float: true
+                        }
+                    })
+                    break;
+            }
+        }
+    </script>
+    <div id="content">
+        <form action="/Login/Login" method="post">
+            @Html.AntiForgeryToken()
+            <div id="dialog">
+                <span class="title"><b>Sign In</b></span>
+                <div class="inputBox">
+                    <input id="Username" class="input" placeholder=" " type="text" name="Username" autocomplete="off">
+                    <label class="name">Account</label>
+                    <i></i>
+                </div>
+                <div class="inputBox">
+                    <input id="Password" class="input" placeholder=" " type="password" name="Password" autocomplete="off">
+                    <label class="name">Password</label>
+                    @*<p class="material-symbols-outlined showEye" onclick="showPassword(this)">visibility_off</p>*@
+                    <i></i>
+                </div>
+                <div class="submit">
+                    <button type="submit">Sign in</button>
+                    <div>
+                        <a href="/Login/Register">Create Account</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>

@@ -1,0 +1,356 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="TopicModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="BloodPressure">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="SystolicValue" Type="Double" Nullable="false" />
+    <Property Name="DiastolicValue" Type="Double" Nullable="false" />
+    <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CareRecipientID" Type="Guid" Nullable="false" />
+    <NavigationProperty Name="CareRecipient" Relationship="Self.FK_BloodPressure_CareRecipient1" FromRole="BloodPressure" ToRole="CareRecipient" />
+  </EntityType>
+  <EntityType Name="Caregiver">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IdentityNumber" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PasswordSalt" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PasswordWorkFactor" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="CarePairs" Relationship="Self.FK_CarePair_Caregiver" FromRole="Caregiver" ToRole="CarePair" />
+    <NavigationProperty Name="Falls" Relationship="Self.FK_Fall_Caregiver" FromRole="Caregiver" ToRole="Fall" />
+  </EntityType>
+  <EntityType Name="CarePair">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="CaregiverID" Type="Guid" Nullable="false" />
+    <Property Name="CareRecipientID" Type="Guid" Nullable="false" />
+    <NavigationProperty Name="Caregiver" Relationship="Self.FK_CarePair_Caregiver" FromRole="CarePair" ToRole="Caregiver" />
+    <NavigationProperty Name="CareRecipient" Relationship="Self.FK_CarePair_CareRecipient" FromRole="CarePair" ToRole="CareRecipient" />
+  </EntityType>
+  <EntityType Name="CareRecipient">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IdentityNumber" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PasswordSalt" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PasswordWorkFactor" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="BloodPressures" Relationship="Self.FK_BloodPressure_CareRecipient1" FromRole="CareRecipient" ToRole="BloodPressure" />
+    <NavigationProperty Name="CarePairs" Relationship="Self.FK_CarePair_CareRecipient" FromRole="CareRecipient" ToRole="CarePair" />
+    <NavigationProperty Name="Equipments" Relationship="Self.FK_Equipment_CareRecipient" FromRole="CareRecipient" ToRole="Equipment" />
+  </EntityType>
+  <EntityType Name="Equipment">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="DisplayName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="MacAddress" Type="String" MaxLength="17" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="CareRecipientID" Type="Guid" Nullable="false" />
+    <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="CareRecipient" Relationship="Self.FK_Equipment_CareRecipient" FromRole="Equipment" ToRole="CareRecipient" />
+    <NavigationProperty Name="Falls" Relationship="Self.FK_Fall_Equipment" FromRole="Equipment" ToRole="Fall" />
+    <NavigationProperty Name="Humidities" Relationship="Self.FK_Humidity_Equipment" FromRole="Equipment" ToRole="Humidity" />
+    <NavigationProperty Name="Temperatures" Relationship="Self.FK_Temperature_Equipment" FromRole="Equipment" ToRole="Temperature" />
+    <NavigationProperty Name="EquipmentContainTypes" Relationship="TopicModel.FK_EquipmentContainType_Equipment" FromRole="Equipment" ToRole="EquipmentContainType" />
+    <NavigationProperty Name="BloodOxygens" Relationship="TopicModel.FK_BloodOxygen_Equipment" FromRole="Equipment" ToRole="BloodOxygen" />
+    <NavigationProperty Name="HeartRates" Relationship="TopicModel.FK_HeartRate_Equipment" FromRole="Equipment" ToRole="HeartRate" />
+  </EntityType>
+  <EntityType Name="EquipmentType">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="EquipmentContainTypes" Relationship="TopicModel.FK_EquipmentContainType_EquipmentType" FromRole="EquipmentType" ToRole="EquipmentContainType" />
+  </EntityType>
+  <EntityType Name="Fall">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="EquipmentID" Type="Guid" Nullable="false" />
+    <Property Name="isChecked" Type="Boolean" Nullable="false" />
+    <Property Name="CaregiverID" Type="Guid" />
+    <Property Name="CheckDateTime" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Caregiver" Relationship="Self.FK_Fall_Caregiver" FromRole="Fall" ToRole="Caregiver" />
+    <NavigationProperty Name="Equipment" Relationship="Self.FK_Fall_Equipment" FromRole="Fall" ToRole="Equipment" />
+  </EntityType>
+  <EntityType Name="Humidity">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="EquipmentID" Type="Guid" Nullable="false" />
+    <Property Name="Value" Type="Double" Nullable="false" />
+    <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Equipment" Relationship="Self.FK_Humidity_Equipment" FromRole="Humidity" ToRole="Equipment" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="Temperature">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="EquipmentID" Type="Guid" Nullable="false" />
+    <Property Name="Value" Type="Double" Nullable="false" />
+    <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Equipment" Relationship="Self.FK_Temperature_Equipment" FromRole="Temperature" ToRole="Equipment" />
+  </EntityType>
+  <Association Name="FK_BloodPressure_CareRecipient1">
+    <End Role="CareRecipient" Type="Self.CareRecipient" Multiplicity="1" />
+    <End Role="BloodPressure" Type="Self.BloodPressure" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CareRecipient">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="BloodPressure">
+        <PropertyRef Name="CareRecipientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CarePair_Caregiver">
+    <End Role="Caregiver" Type="Self.Caregiver" Multiplicity="1" />
+    <End Role="CarePair" Type="Self.CarePair" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Caregiver">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CarePair">
+        <PropertyRef Name="CaregiverID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Fall_Caregiver">
+    <End Role="Caregiver" Type="Self.Caregiver" Multiplicity="0..1" />
+    <End Role="Fall" Type="Self.Fall" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Caregiver">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Fall">
+        <PropertyRef Name="CaregiverID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CarePair_CareRecipient">
+    <End Role="CareRecipient" Type="Self.CareRecipient" Multiplicity="1" />
+    <End Role="CarePair" Type="Self.CarePair" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CareRecipient">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CarePair">
+        <PropertyRef Name="CareRecipientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Equipment_CareRecipient">
+    <End Role="CareRecipient" Type="Self.CareRecipient" Multiplicity="1" />
+    <End Role="Equipment" Type="Self.Equipment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CareRecipient">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Equipment">
+        <PropertyRef Name="CareRecipientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Fall_Equipment">
+    <End Role="Equipment" Type="Self.Equipment" Multiplicity="1" />
+    <End Role="Fall" Type="Self.Fall" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Equipment">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Fall">
+        <PropertyRef Name="EquipmentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Humidity_Equipment">
+    <End Role="Equipment" Type="Self.Equipment" Multiplicity="1" />
+    <End Role="Humidity" Type="Self.Humidity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Equipment">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Humidity">
+        <PropertyRef Name="EquipmentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Temperature_Equipment">
+    <End Role="Equipment" Type="Self.Equipment" Multiplicity="1" />
+    <End Role="Temperature" Type="Self.Temperature" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Equipment">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Temperature">
+        <PropertyRef Name="EquipmentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="TopicEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="BloodPressures" EntityType="Self.BloodPressure" />
+    <EntitySet Name="Caregivers" EntityType="Self.Caregiver" />
+    <EntitySet Name="CarePairs" EntityType="Self.CarePair" />
+    <EntitySet Name="CareRecipients" EntityType="Self.CareRecipient" />
+    <EntitySet Name="Equipments" EntityType="Self.Equipment" />
+    <EntitySet Name="EquipmentTypes" EntityType="Self.EquipmentType" />
+    <EntitySet Name="Falls" EntityType="Self.Fall" />
+    <EntitySet Name="Humidities" EntityType="Self.Humidity" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="Temperatures" EntityType="Self.Temperature" />
+    <AssociationSet Name="FK_BloodPressure_CareRecipient1" Association="Self.FK_BloodPressure_CareRecipient1">
+      <End Role="CareRecipient" EntitySet="CareRecipients" />
+      <End Role="BloodPressure" EntitySet="BloodPressures" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CarePair_Caregiver" Association="Self.FK_CarePair_Caregiver">
+      <End Role="Caregiver" EntitySet="Caregivers" />
+      <End Role="CarePair" EntitySet="CarePairs" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Fall_Caregiver" Association="Self.FK_Fall_Caregiver">
+      <End Role="Caregiver" EntitySet="Caregivers" />
+      <End Role="Fall" EntitySet="Falls" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CarePair_CareRecipient" Association="Self.FK_CarePair_CareRecipient">
+      <End Role="CareRecipient" EntitySet="CareRecipients" />
+      <End Role="CarePair" EntitySet="CarePairs" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Equipment_CareRecipient" Association="Self.FK_Equipment_CareRecipient">
+      <End Role="CareRecipient" EntitySet="CareRecipients" />
+      <End Role="Equipment" EntitySet="Equipments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Fall_Equipment" Association="Self.FK_Fall_Equipment">
+      <End Role="Equipment" EntitySet="Equipments" />
+      <End Role="Fall" EntitySet="Falls" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Humidity_Equipment" Association="Self.FK_Humidity_Equipment">
+      <End Role="Equipment" EntitySet="Equipments" />
+      <End Role="Humidity" EntitySet="Humidities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Temperature_Equipment" Association="Self.FK_Temperature_Equipment">
+      <End Role="Equipment" EntitySet="Equipments" />
+      <End Role="Temperature" EntitySet="Temperatures" />
+    </AssociationSet>
+    <EntitySet Name="EquipmentContainTypes" EntityType="TopicModel.EquipmentContainType" />
+    <AssociationSet Name="FK_EquipmentContainType_Equipment" Association="TopicModel.FK_EquipmentContainType_Equipment">
+      <End Role="Equipment" EntitySet="Equipments" />
+      <End Role="EquipmentContainType" EntitySet="EquipmentContainTypes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_EquipmentContainType_EquipmentType" Association="TopicModel.FK_EquipmentContainType_EquipmentType">
+      <End Role="EquipmentType" EntitySet="EquipmentTypes" />
+      <End Role="EquipmentContainType" EntitySet="EquipmentContainTypes" />
+    </AssociationSet>
+    <EntitySet Name="BloodOxygens" EntityType="TopicModel.BloodOxygen" />
+    <EntitySet Name="HeartRates" EntityType="TopicModel.HeartRate" />
+    <AssociationSet Name="FK_BloodOxygen_Equipment" Association="TopicModel.FK_BloodOxygen_Equipment">
+      <End Role="Equipment" EntitySet="Equipments" />
+      <End Role="BloodOxygen" EntitySet="BloodOxygens" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HeartRate_Equipment" Association="TopicModel.FK_HeartRate_Equipment">
+      <End Role="Equipment" EntitySet="Equipments" />
+      <End Role="HeartRate" EntitySet="HeartRates" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="EquipmentContainType">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="EquipmentID" Type="Guid" Nullable="false" />
+    <Property Name="EquipmentTypeID" Type="Guid" Nullable="false" />
+    <NavigationProperty Name="Equipment" Relationship="TopicModel.FK_EquipmentContainType_Equipment" FromRole="EquipmentContainType" ToRole="Equipment" />
+    <NavigationProperty Name="EquipmentType" Relationship="TopicModel.FK_EquipmentContainType_EquipmentType" FromRole="EquipmentContainType" ToRole="EquipmentType" />
+  </EntityType>
+  <Association Name="FK_EquipmentContainType_Equipment">
+    <End Type="TopicModel.Equipment" Role="Equipment" Multiplicity="1" />
+    <End Type="TopicModel.EquipmentContainType" Role="EquipmentContainType" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Equipment">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="EquipmentContainType">
+        <PropertyRef Name="EquipmentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_EquipmentContainType_EquipmentType">
+    <End Type="TopicModel.EquipmentType" Role="EquipmentType" Multiplicity="1" />
+    <End Type="TopicModel.EquipmentContainType" Role="EquipmentContainType" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EquipmentType">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="EquipmentContainType">
+        <PropertyRef Name="EquipmentTypeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="BloodOxygen">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="EquipmentID" Type="Guid" Nullable="false" />
+    <Property Name="Value" Type="Double" Nullable="false" />
+    <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Equipment" Relationship="TopicModel.FK_BloodOxygen_Equipment" FromRole="BloodOxygen" ToRole="Equipment" />
+  </EntityType>
+  <EntityType Name="HeartRate">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="EquipmentID" Type="Guid" Nullable="false" />
+    <Property Name="Value" Type="Double" Nullable="false" />
+    <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Equipment" Relationship="TopicModel.FK_HeartRate_Equipment" FromRole="HeartRate" ToRole="Equipment" />
+  </EntityType>
+  <Association Name="FK_BloodOxygen_Equipment">
+    <End Type="TopicModel.Equipment" Role="Equipment" Multiplicity="1" />
+    <End Type="TopicModel.BloodOxygen" Role="BloodOxygen" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Equipment">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="BloodOxygen">
+        <PropertyRef Name="EquipmentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HeartRate_Equipment">
+    <End Type="TopicModel.Equipment" Role="Equipment" Multiplicity="1" />
+    <End Type="TopicModel.HeartRate" Role="HeartRate" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Equipment">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="HeartRate">
+        <PropertyRef Name="EquipmentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

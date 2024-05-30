@@ -1,0 +1,387 @@
+﻿/* dialog */
+
+#dialog {
+    position: relative;
+    width: 60vh;
+    background-color: #c17135;
+    border: 2px solid #874310;
+    border-radius: 5px;
+    box-shadow: 10px 10px 20px #0005;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    color: #fff;
+    padding-bottom: 200px;
+    padding-top: 50px;
+    z-index: 100;
+}
+
+#dialog label.property {
+    font-size: 1.2em;
+    align-self: flex-start;
+    margin: 20px 10px 10px 10px;
+}
+
+#dialog div.custom {
+    width: 100%;
+}
+
+#dialog ul.selectDropdown {
+    width: 100%
+}
+
+#dialog .title {
+    width: calc(100%- 10px);
+    text-align: center;
+    font-size: 2em;
+    display: block;
+    z-index: 2;
+    margin: 10px;
+}
+
+#dialog .fillBox {
+    height: 100%;
+    flex-grow: 1;
+}
+
+#dialog .inputBox {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 40px;
+    margin-top: 40px;
+    align-items: center;
+}
+
+#dialog .inputBox i {
+    position: absolute;
+    height: 2px;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+    background-color: #ffd592;
+    border-radius: 10px;
+    transition: height 0.25s ease;
+}
+
+#dialog .inputBox .input:focus ~ i {
+    height: 100%;
+}
+
+#dialog .inputBox #password:focus ~ i {
+    height: 100%;
+}
+
+#dialog .inputBox .input:not(:placeholder-shown) ~ i {
+    height: 100%;
+}
+
+#dialog .inputBox .input {
+    appearance: none;
+    background-color: #0000;
+    border: none;
+    padding: 0px 10px;
+    width: 100%;
+    z-index: 3;
+    font-size: 1.2em;
+}
+
+#dialog .inputBox .input::-webkit-inner-spin-button {
+    appearance: none;
+}
+
+#dialog .inputBox .input:focus {
+    appearance: none;
+    border: none;
+    outline: none;
+}
+
+#dialog .inputBox .name {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    font-size: 1.2em;
+    transition: top 0.25s, left 0.25s, color 0.25s, font-size 0.25s;
+}
+
+
+#dialog .inputBox .input:focus ~ .name {
+    top: -25px;
+    left: 5px;
+    color: #ffd592;
+    font-size: 1em;
+}
+
+#dialog .inputBox .input:not(:placeholder-shown) ~ .name {
+    top: -25px;
+    left: 5px;
+    color: #ffd592;
+    font-size: 1em;
+}
+
+#dialog .inputBox .showEye {
+    position: absolute;
+    height: 100%;
+    right: 10px;
+    z-index: 4;
+    font-size: 1.5em;
+    color: #000;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.25s;
+    cursor: pointer;
+}
+
+#dialog .inputBox .input:focus ~ .showEye, #dialog .inputBox .input:not(:placeholder-shown) ~ .showEye {
+    transform: scaleY(1);
+}
+
+#dialog .inputBox .date::-webkit-calendar-picker-indicator {
+    position: absolute;
+    right: 10px;
+}
+
+#dialog .radioBox {
+    margin-top: 40px;
+    width: 100%;
+}
+
+
+#dialog .radioBox .radio {
+    cursor: pointer;
+    position: relative;
+}
+
+#dialog .radioBox .radio input {
+    opacity: 0;
+    position: relative;
+    display: inline-flex;
+    padding-left: 5px;
+}
+
+#dialog .radioBox .radio span::after {
+    content: " ";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 15px;
+    height: 15px;
+    background-color: #e1e1e1;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+#dialog .radioBox .radio input:not(:checked):hover ~ span::after {
+    background-color: #aaa;
+}
+
+#dialog .radioBox .radio input:checked ~ span::after {
+    background-color: #ffd592;
+}
+
+#dialog .radioBox .radio input:checked ~ span::before {
+    content: " ";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 15px;
+    height: 15px;
+    background-color: #fff;
+    border-radius: 50%;
+    transform: scale(0.5);
+    z-index: 3;
+}
+
+#dialog .checkBox {
+    margin-top: 10px;
+    width: 100%;
+}
+
+#dialog .checkBox .check {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 2px 2px;
+    position: relative;
+}
+
+#dialog .checkBox .check input {
+    opacity: 0;
+    padding-left: 5px;
+}
+
+#dialog .checkBox .check span::before {
+    content: " ";
+    position: absolute;
+    top: 5px;
+    left: 0px;
+    width: 15px;
+    height: 15px;
+    background-color: #e1e1e1;
+    border-radius: 1px;
+}
+
+#dialog .checkBox .check input:not(:checked):hover ~ span::before {
+    background-color: #aaa;
+}
+
+#dialog .checkBox .check input:checked ~ span::before {
+    background-color: #ffd592;
+}
+
+
+#dialog .checkBox .check input:checked ~ span::after {
+    content: " ";
+    position: absolute;
+    box-sizing: border-box;
+    top: 5px;
+    left: 0px;
+    width: 15px;
+    height: 15px;
+    border: solid #fff;
+    border-width: 0 8px 4px 0;
+    transform-origin: center;
+    transform: rotate(45deg) scaleY(0.8) scaleX(0.4);
+}
+
+#dialog .submit {
+    position: absolute;
+    width: calc(100% - 40px);
+    bottom: 50px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 2;
+}
+
+#dialog .submit div {
+    margin-top: 10px
+}
+
+#dialog .submit div a {
+    color: #fff;
+}
+
+#dialog .submit div a:hover {
+    color: #ffd592;
+}
+
+#dialog .submit button {
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    background-color: #e5bf82;
+    user-select: none;
+    cursor: pointer;
+    display: block;
+}
+
+
+#dialog .submit button:hover {
+    background-color: #ffd592dd;
+}
+
+#dialog .selection {
+    font-size: 1.2em;
+    margin-top: 40px;
+    width: 100%;
+}
+
+#dialog .selection select {
+    display: flexbox;
+    width: 100%;
+    height: 40px;
+    font-size: 1em;
+    margin-top: 5px;
+    background-color: #ffd592;
+    padding-left: 10px;
+    border-radius: 10px;
+}
+
+#dialog .selection select option {
+    padding: 10px 0px;
+}
+
+#dialog .selection select:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+#dialog .data {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    font-size: 1.2em;
+}
+
+
+
+
+
+/* new Dialog */
+#newDialog.close form #dialog {
+    transform: scale(0);
+    z-index: -1;
+}
+
+#newDialog.open form #dialog {
+    transform: scale(1);
+    z-index: 10000;
+}
+
+#newDialog.clickable {
+    z-index: 100;
+}
+
+#newDialog:not(.clickable) {
+    z-index: -1;
+}
+
+#newDialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#newDialog form #dialog {
+    transition: transform ease 0.5s;
+}
+
+#background {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background: #0004;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity ease 0.5s;
+}
+
+#newDialog.open #background {
+    opacity: 1;
+    z-index: 100;
+}
+
+

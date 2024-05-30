@@ -1,0 +1,105 @@
+﻿<main>
+    <script>
+        var dialogClosing = false
+        function newCareRecipient() {
+            if (dialogClosing) return;
+            document.getElementById("newDialog").classList.toggle("close")
+            document.getElementById("newDialog").classList.toggle("open")
+            if (document.getElementById("newDialog").classList.contains("clickable")) {
+                dialogClosing = true;
+                setTimeout(() => {
+                    document.getElementById("newDialog").classList.toggle("clickable")
+                    dialogClosing = false
+                }, 500)
+            }
+            else {
+                
+                document.getElementById("newDialog").classList.toggle("clickable")
+            }
+        }
+
+        function logout() {
+            window.location.href = "/Login/Logout"
+        }
+
+        function showData(data) {
+            window.location.href = "/Main/CareRecipientDetail/" + data
+        }
+
+        window.onload = () => {
+            titleAnimation()
+            var status = parseInt('@TempData["Status"]')
+            switch (status) {
+                case 2:
+                    newAlert({
+                        content: "No Care Recipient data found"
+                    })
+                case 3:
+                    newAlert({
+                        content: "Care Recipient Data is already exists"
+                    })
+            }
+        }
+    </script>
+
+    <div id="header">
+        <a class="content">Health Taker</a>
+        <div id="buttons">
+            <div class="button" onclick="logout()">
+                <a>Logout</a>
+            </div>
+            <div class="button" onclick="newCareRecipient()">
+                <a>New Care Recipient</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="newDialog" class="close">
+        <div id="background" onclick="newCareRecipient()"></div>
+        <form action="/Main/Main" method="post">
+            @Html.AntiForgeryToken()
+            <div id="dialog">
+                <span class="title"><b>Add New Care Recipient</b></span>
+                <div class="inputBox">
+                    <input id="Name" class="input" placeholder=" " type="text" name="Name" autocomplete="off">
+                    <label class="name">Name</label>
+                    <i></i>
+                </div>
+                <div class="inputBox">
+                    <input id="IdentityNumber" class="input" placeholder=" " type="text" name="IdentityNumber" autocomplete="off">
+                    <label class="name">Care Recipien Identity Number</label>
+                    <i></i>
+                </div>
+                <div class="submit">
+                    <button type="submit">Add Care Recipient</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="application">
+        <div id="applicationTitle">
+            <a id="applicationName"></a>
+            <span>_</span>
+        </div>
+
+        <div id="tableData">
+            <p class="categoryTitle">Care Recipient</p>
+            <div class="land">
+                @foreach (CareRecipient item in ViewBag.Data)
+                {
+                    <div class="dataBlock">
+                        <form action="/Main/CareRecipientDetail/@item.ID" method="get">
+                            <button type="submit"></button>
+                            <div class="blockBackground"></div>
+                            <div class="imageBlock">
+                                <img src="~/Image/account.svg" />
+                            </div>
+                            <p>Care Recipient: @item.Username</p>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</main>

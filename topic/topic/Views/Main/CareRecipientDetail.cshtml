@@ -1,0 +1,659 @@
+﻿<main>
+    <script>
+        Array.prototype.max = function () {
+            return Math.max.apply(null, this)
+        }
+
+        var dialogClosing = false
+        function newEquipment(type) {
+            if (dialogClosing) return;
+            if (type) {
+                document.getElementById("EquipmentID").value = ""
+                document.getElementById("DisplayName").value = ""
+                document.getElementById("DisplayName").readOnly = false
+                document.getElementById("MacAddress").value = ""
+                document.getElementById("MacAddress").readOnly = false
+                document.getElementById("submitButton").innerText = "Add Equipment"
+                document.getElementById("titleDialog").innerText = "Add New Equipment"
+                document.getElementById("Action").value = true;
+                for (var e of document.getElementsByClassName("check")) {
+                    e.children[0].checked = false
+                }
+            }
+            document.getElementById("newDialog").classList.toggle("close")
+            document.getElementById("newDialog").classList.toggle("open")
+            if (document.getElementById("newDialog").classList.contains("clickable")) {
+                dialogClosing = true;
+                setTimeout(() => {
+                    document.getElementById("newDialog").classList.toggle("clickable")
+                    dialogClosing = false
+                }, 500)
+            }
+            else {
+                document.getElementById("newDialog").classList.toggle("clickable")
+            }
+        }
+
+
+        async function editEquipment(id, displayName, macaddress) {
+            document.getElementById("EquipmentID").value = id.toString()
+            document.getElementById("DisplayName").value = displayName.toString()
+            document.getElementById("DisplayName").readOnly = true
+            document.getElementById("MacAddress").value = macaddress.toString()
+            document.getElementById("MacAddress").readOnly = true
+            document.getElementById("submitButton").innerText = "Edit Equipment"
+            document.getElementById("titleDialog").innerText = `Edit ${displayName}`
+            document.getElementById("Action").value = false
+            var type = await fetch("/api/Equipment/getType/" + id, {
+                method: "get"
+            }).then(r => r.json())
+            console.log(type)
+            for (var e of document.getElementsByClassName("check")) {
+                e.children[0].checked = false
+                if (type.includes(e.children[0].value)) {
+                    e.children[0].checked = true
+                }
+            }
+            newEquipment(false)
+        }
+
+        function checkData(id) {
+            fetch("/api/View/checkFall", {
+                method: "post",
+                headers: new Headers({
+                    "Content-Type" : "application/json"
+                }),
+                body: JSON.stringify({
+                    "id": id,
+                    "caregiver": '@ViewData["Caregiver"]'
+                })
+            }).then(r => {
+                window.location.reload()
+            })
+        }
+
+        function dateChange() {
+            checkValue(document.getElementById("dateType").innerText, 'dateType')
+        }
+
+
+        function back() {
+            window.location.href = "/Main/Main"
+        }
+
+        function showData(data) {
+            window.location.href = "/Main/CareRecipientDetail/" + data
+        }
+
+        async function showTempData() {
+            var mode = document.getElementById("dateType").innerText
+            var date = new Date(Date.parse(document.getElementById("DataDate").value))
+            createChart(await {
+                    labels: (() => {
+                        var res = []
+                        if (mode == "Day") {
+                            for (var i = 0; i < 24; i++) {
+                                res.push(`${i.toString().padStart(2, '0')}:00`)
+                            }
+                        }
+                        else {
+                            for (var i = 1; i <= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+                                res.push(`${date.getFullYear() }/${date.getMonth()+1}/${i}`);
+                            }
+                        }
+                        return res
+                    })(),
+                    datasets: [{
+                        label: "Temperture",
+                        data: await (async () => {
+                            if (mode == "Day") {
+                                var data = await fetch("/api/View/getTemp", {
+                                    method: "post",
+                                    body: JSON.stringify({
+                                        "id": '@ViewData["ID"]',
+                                        "date": date.toUTCString(),
+                                        "type": "day"
+                                    }),
+                                    headers: new Headers({
+                                        "Content-Type" : "application/json"
+                                    })
+                                }).then(r => r.json())
+
+                                var res = []
+                                for (i = 0; i < 24; i++) {
+                                    res.push(data.filter(x => x.Hour == i).map(x => x.Value).max())
+                                }
+                                console.log(res)
+                                return res
+                            }
+                            else {
+                                var data = await fetch("/api/View/getTemp", {
+                                    method: "post",
+                                    body: JSON.stringify({
+                                        "id": "@ViewData["ID"]",
+                                        "date": date.toUTCString(),
+                                        "type": "month"
+                                    }),
+                                    headers: new Headers({
+                                        "Content-Type" : "application/json"
+                                    })
+                                }).then(r => r.json())
+                                console.log(data)
+                                var res = []
+                                for (var i = 1; i <= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+                                    res.push(data.filter(x => x.Day == i).map(x => x.Value).max())
+                                }
+                                console.log(res)
+                                return res;
+                            }
+
+                        })(),
+                        color: "#ffd592"
+                    }]
+
+            })
+
+        }
+
+        async function showBloodData() {
+            var date = new Date(Date.parse(document.getElementById("DataDate").value))
+            createChart(await {
+                labels: (() => {
+                    var res = []
+                    for (var i = 1; i <= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+                        res.push(`${date.getFullYear()}/${date.getMonth()+1}/${i}`);
+                    }
+                    return res
+                })(),
+                datasets: [{
+                    label: "Systolic Blood Pressure",
+                    data: await (async () => {
+                        var data = await fetch("/api/View/getBloodPressure", {
+                            method: "post",
+                            body: JSON.stringify({
+                                "id": "@ViewData["ID"]",
+                                "date": date.toUTCString(),
+                            }),
+                            headers: new Headers({
+                                "Content-Type" : "application/json"
+                            })
+                        }).then(r => r.json())
+                        console.log(data)
+                        var res = []
+                        for (var i = 1; i <= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+                            res.push(data.filter(x => x.Day == i).map(x => x.Systolic).max())
+                        }
+                        console.log(res)
+                        return res;
+                    })(),
+                    color: "#ffd592"
+                },
+                {
+                    label: "Diastolic Blood Pressure",
+                    data: await (async () => {
+                        var data = await fetch("/api/View/getBloodPressure", {
+                            method: "post",
+                            body: JSON.stringify({
+                                "id": "@ViewData["ID"]",
+                                "date": date.toUTCString(),
+                            }),
+                            headers: new Headers({
+                                "Content-Type" : "application/json"
+                            })
+                        }).then(r => r.json())
+                        console.log(data)
+                        var res = []
+                        for (var i = 1; i <= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+                            res.push(data.filter(x => x.Day == i).map(x => x.Diastolic).max())
+                        }
+                        console.log(res)
+                        return res;
+
+                    })(),
+                    color: "#64fc46"
+                }
+                ]
+            })
+        }
+
+        async function showFallData() {
+            var date = new Date(Date.parse(document.getElementById("DataDate").value))
+            createChart(await {
+                labels: (() => {
+                    var res = []
+                    for (var i = 1; i <= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+                        res.push(`${date.getFullYear()}/${date.getMonth() + 1}/${i}`);
+                    }
+                    return res
+                })(),
+                datasets: [{
+                    label: "Fall Count",
+                    data: await (async () => {
+                        var data = await fetch("/api/View/getFall", {
+                            method: "post",
+                            body: JSON.stringify({
+                                "id": "@ViewData["ID"]",
+                                "date": date.toUTCString(),
+                            }),
+                            headers: new Headers({
+                                "Content-Type" : "application/json"
+                            })
+                        }).then(r => r.json())
+                        console.log(data)
+                        var res = []
+                        for (var i = 1; i <= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+                            res.push(data.filter(x => x.Day == i).map(x => x.Value).max())
+                        }
+                        console.log(res)
+                        return res;
+                    })(),
+                    color: "#ffd592"
+                }]
+            })
+        }
+
+        async function showHumidityData() {
+            var mode = document.getElementById("dateType").innerText
+            var date = new Date(Date.parse(document.getElementById("DataDate").value))
+            createChart(await {
+                    labels: (() => {
+                        var res = []
+                        if (mode == "Day") {
+                            for (var i = 0; i < 24; i++) {
+                                res.push(`${i.toString().padStart(2, '0')}:00`)
+                            }
+                        }
+                        else {
+                            for (var i = 1; i <= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+                                res.push(`${date.getFullYear() }/${date.getMonth()+1}/${i}`);
+                            }
+                        }
+                        return res
+                    })(),
+                    datasets: [{
+                        label: "Humidity",
+                        data: await (async () => {
+                            if (mode == "Day") {
+                                var data = await fetch("/api/View/getHumidity", {
+                                    method: "post",
+                                    body: JSON.stringify({
+                                        "id": '@ViewData["ID"]',
+                                        "date": date.toUTCString(),
+                                        "type": "day"
+                                    }),
+                                    headers: new Headers({
+                                        "Content-Type" : "application/json"
+                                    })
+                                }).then(r => r.json())
+
+                                var res = []
+                                for (i = 0; i < 24; i++) {
+                                    res.push(data.filter(x => x.Hour == i)[0]?.Value)
+                                }
+                                console.log(res)
+                                return res
+                            }
+                            else {
+                                var data = await fetch("/api/View/getHumidity", {
+                                    method: "post",
+                                    body: JSON.stringify({
+                                        "id": "@ViewData["ID"]",
+                                        "date": date.toUTCString(),
+                                        "type": "month"
+                                    }),
+                                    headers: new Headers({
+                                        "Content-Type" : "application/json"
+                                    })
+                                }).then(r => r.json())
+                                console.log(data)
+                                var res = []
+                                for (var i = 1; i <= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+                                    res.push(data.filter(x => x.Day == i).map(x => x.Value).max())
+                                }
+                                console.log(res)
+                                return res;
+                            }
+
+                        })(),
+                        color: "#ffd592"
+                    }]
+
+            })
+        }
+
+         async function showHeartRateData() {
+            var mode = document.getElementById("dateType").innerText
+            var date = new Date(Date.parse(document.getElementById("DataDate").value))
+            createChart(await {
+                    labels: (() => {
+                        var res = []
+                        if (mode == "Day") {
+                            for (var i = 0; i < 24; i++) {
+                                res.push(`${i.toString().padStart(2, '0')}:00`)
+                            }
+                        }
+                        else {
+                            for (var i = 1; i <= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+                                res.push(`${date.getFullYear() }/${date.getMonth()+1}/${i}`);
+                            }
+                        }
+                        return res
+                    })(),
+                    datasets: [{
+                        label: "Heart Rate",
+                        data: await (async () => {
+                            if (mode == "Day") {
+                                var data = await fetch("/api/View/getHeartRate", {
+                                    method: "post",
+                                    body: JSON.stringify({
+                                        "id": '@ViewData["ID"]',
+                                        "date": date.toUTCString(),
+                                        "type": "day"
+                                    }),
+                                    headers: new Headers({
+                                        "Content-Type" : "application/json"
+                                    })
+                                }).then(r => r.json())
+
+                                var res = []
+                                for (i = 0; i < 24; i++) {
+                                    res.push(data.filter(x => x.Hour == i).map(x => x.Value).max())
+                                }
+                                console.log(res)
+                                return res
+                            }
+                            else {
+                                var data = await fetch("/api/View/getHeartRate", {
+                                    method: "post",
+                                    body: JSON.stringify({
+                                        "id": "@ViewData["ID"]",
+                                        "date": date.toUTCString(),
+                                        "type": "month"
+                                    }),
+                                    headers: new Headers({
+                                        "Content-Type" : "application/json"
+                                    })
+                                }).then(r => r.json())
+                                console.log(data)
+                                var res = []
+                                for (var i = 1; i <= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+                                    res.push(data.filter(x => x.Day == i).map(x => x.Value).max())
+                                }
+                                console.log(res)
+                                return res;
+                            }
+
+                        })(),
+                        color: "#ffd592"
+                    }]
+            })
+        }
+
+        async function showBloodOxygenData() {
+            var mode = document.getElementById("dateType").innerText
+            var date = new Date(Date.parse(document.getElementById("DataDate").value))
+            createChart(await {
+                    labels: (() => {
+                        var res = []
+                        if (mode == "Day") {
+                            for (var i = 0; i < 24; i++) {
+                                res.push(`${i.toString().padStart(2, '0')}:00`)
+                            }
+                        }
+                        else {
+                            for (var i = 1; i <= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+                                res.push(`${date.getFullYear() }/${date.getMonth()+1}/${i}`);
+                            }
+                        }
+                        return res
+                    })(),
+                    datasets: [{
+                        label: "Blood Oxygen",
+                        data: await (async () => {
+                            if (mode == "Day") {
+                                var data = await fetch("/api/View/getBloodOxygen", {
+                                    method: "post",
+                                    body: JSON.stringify({
+                                        "id": '@ViewData["ID"]',
+                                        "date": date.toUTCString(),
+                                        "type": "day"
+                                    }),
+                                    headers: new Headers({
+                                        "Content-Type" : "application/json"
+                                    })
+                                }).then(r => r.json())
+
+                                var res = []
+                                for (i = 0; i < 24; i++) {
+                                    res.push(data.filter(x => x.Hour == i).map(x => x.Value).max())
+                                }
+                                console.log(res)
+                                return res
+                            }
+                            else {
+                                var data = await fetch("/api/View/getBloodOxygen", {
+                                    method: "post",
+                                    body: JSON.stringify({
+                                        "id": "@ViewData["ID"]",
+                                        "date": date.toUTCString(),
+                                        "type": "month"
+                                    }),
+                                    headers: new Headers({
+                                        "Content-Type" : "application/json"
+                                    })
+                                }).then(r => r.json())
+                                console.log(data)
+                                var res = []
+                                for (var i = 1; i <= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+                                    res.push(data.filter(x => x.Day == i).map(x => x.Value).max())
+                                }
+                                console.log(res)
+                                return res;
+                            }
+
+                        })(),
+                        color: "#ffd592"
+                    }]
+            })
+        }
+
+        var warning = 0
+        window.onload = () => {
+            titleAnimation()
+            setInterval((async () => {
+                var data = await fetch("/api/View/getFall/@ViewData["id"]", {
+                    method: "get"
+                }).then(r => r.json())
+                if (data.Value != @ViewBag.FallCount + warning) {
+                    warning += 1
+                    newAlert({
+                        content: "Falls Warning",
+                        during: 10000,
+                        click: (() => {
+                            console.log(123)
+                            window.location.reload()
+                        })
+                    })
+                }
+            }), 200);
+            var status = parseInt('@TempData["Status"]')
+            switch (status) {
+                case 2:
+                    newAlert({
+                        content: "Some fields are not filled in"
+                    })
+                    break
+                case 3:
+                    newAlert({
+                        content: "Incorrect format for Mac Address"
+                    })
+                    break
+                case 4:
+                    newAlert({
+                        content: "The Mac Address already exists"
+                    })
+                    break
+                case 5:
+                    newAlert({
+                        content: "Incorrect format for Display Name"
+                    })
+                    break
+                case 6:
+                    newAlert({
+                        content: "Incorrect format for Display Name"
+                    })
+                    break
+            }
+        }
+
+
+    </script>
+
+    <div id="header">
+        <a class="content">Health Taker</a>
+        <div id="buttons">
+            <div class="button" onclick="back()">
+                <a>Back</a>
+            </div>
+            <div class="button" onclick="newEquipment(true)">
+                <a>New Equipment</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="newDialog" class="close">
+        <div id="background" onclick="newEquipment(true)"></div>
+        <form action="/Main/AddEquipment" method="post">
+            @Html.AntiForgeryToken()
+            <div id="dialog">
+                <span class="title"><b id="titleDialog">Add New Equipment</b></span>
+                <input type="hidden" id="ID" name="ID" value="@ViewData["id"]" />
+                <input type="hidden" id="Action" name="Action" value=true />
+                <input type="hidden" id="EquipmentID" name="EquipmentID" value="" />
+                <div class="inputBox">
+                    <input id="DisplayName" class="input" placeholder=" " type="text" name="DisplayName" autocomplete="off">
+                    <label class="name">Display Name</label>
+                    <i></i>
+                </div>
+                <div class="inputBox">
+                    <input id="MacAddress" class="input" placeholder=" " type="text" name="MacAddress" autocomplete="off">
+                    <label class="name">Mac Address</label>
+                    <i></i>
+                </div>
+                <div class="checkBox form_check">
+                    <label class="data">Choose Type: </label>
+                    @foreach (EquipmentType item in ViewBag.Data)
+                    {
+                        <label class="check"><input type="checkbox" name="Type[]" value="@item.Name"><img src="~/Image/@(item.Name.Contains(" ") ? item.Name.Remove(item.Name.IndexOf(' '), 1) : item.Name).svg" /><span>@item.Name</span></label>
+                    }
+                </div>
+                <div class="submit">
+                    <button type="submit" id="submitButton">Add Equipment</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="application">
+        <div id="applicationTitle">
+            <a id="applicationName"></a>
+            <span>_</span>
+        </div>
+
+        <div id="tableData">
+            <p class="categoryTitle">Care Recipient Detail</p>
+            <div class="land">
+                <div class="filterType">
+                    <label>Data Type</label>
+                    <div class="custom">
+                        <button class="selectButton" onclick="toggleSelect(this)">
+                            <span class="selectValue" id="dataType">Choose a Type</span>
+                            <span class="arrow"></span>
+                        </button>
+                        <ul class="selectDropdown">
+                            @foreach (string item in ViewBag.Type)
+                            {
+                                <li onclick="checkValue('@item', 'dataType')">
+                                    <input type="radio" id="type_@(item)" name="chartType" />
+                                    <label for="type_@(item)">
+                                        <img src="~/Image/@(item.Contains(" ") ? item.Remove(item.IndexOf(' '), 1) : item).svg" />
+                                        <a>@item</a>
+                                    </label>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="filterType close" id="dateTypeFilter">
+                    <label>Chart Type</label>
+                    <div class="custom">
+                        <button class="selectButton" onclick="toggleSelect(this)">
+                            <span class="selectValue" id="dateType">Day</span>
+                            <span class="arrow"></span>
+                        </button>
+                        <ul class="selectDropdown">
+                            <li onclick="checkValue('Day', 'dateType')" id="defaultDateType">
+                                <input type="radio" id="type_Day" value="Day" name="DateFilter" checked />
+                                <label for="type_Day">
+                                    <img src="~/Image/Day.svg" />
+                                    <a>Day</a>
+                                </label>
+                            </li>
+                            <li onclick="checkValue('Month', 'dateType')">
+                                <input type="radio" id="type_Month" value="Month" name="DateFilter" />
+                                <label for="type_Month">
+                                    <img src="~/Image/Month.svg" />
+                                    <a>Month</a>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="filterType close" id="dateFilter">
+                    <div class="inputBox">
+                        <input id="DataDate" class="input" placeholder=" " type="date" name="DataDate" autocomplete="off" onchange="dateChange()" max="@(DateTime.Now.ToString("yyyy-MM-dd"))" onkeypress="return false">
+                        <label class="name">Date</label>
+                        <i></i>
+                    </div>
+                </div>
+            </div>
+            <canvas id="chart"></canvas>
+            <div id="fallTable">
+                @if (ViewBag.FallCount != 0)
+                {
+                    var i = 0;
+                    <table>
+                        <tr>
+                            <td>No. </td>
+                            <td>Occurred Time</td>
+                            <td>Checked Action</td>
+                        </tr>
+                        @foreach (Newtonsoft.Json.Linq.JObject item in Newtonsoft.Json.Linq.JArray.FromObject(ViewBag.Fall))
+                        {
+                            <tr>
+                                <td>@(++i)</td>
+                                <td>@(item.Value<string>("DateTime"))</td>
+                                <td onclick="checkData('@(item.Value<string>("ID"))')">Checked</td>
+                            </tr>
+                        }
+                    </table>
+                }
+            </div>
+            <div class="divider"></div>
+            <p class="categoryTitle">Equipment</p>  
+            <div class="land">
+                @foreach (Newtonsoft.Json.Linq.JObject item in Newtonsoft.Json.Linq.JArray.FromObject(ViewBag.Equipments))
+                {
+                    <div class="dataBlock" onclick="editEquipment('@(item.Value<Guid>("ID"))', '@(item.Value<string>("DisplayName"))', '@(item.Value<string>("MacAddress"))')">
+                        <div class="blockBackground"></div>
+                        <div class="imageBlock">
+                            <img src="~/Image/Equipment.svg" />
+                        </div>
+                        <p class="name">Name: @(item.Value<string>("DisplayName"))</p>
+                        <p class="lastUpdate">Last Update Date: @(item.Value<string>("LastUpdate"))</p>
+                    </div>
+                }
+            </div>
+        </div>       
+    </div>
+</main>

@@ -1,0 +1,104 @@
+﻿div.custom {
+    width: 300px;
+    max-width: 100%;    
+    font-size: 1.5em;
+    position: relative;
+}
+
+div.custom.open .selectDropdown {
+    transform: scaleY(1);
+}
+
+button.selectButton {
+    width: 100%;
+    font-size: 1.5em;
+    background-color: #ffd592;
+    border: #874310 solid 1px;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+}
+
+span.selectValue {
+    font-size: 0.5em;
+    text-align: left;
+}
+
+span.arrow {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #000;
+    transition: transform ease-in-out 0.3s;
+}
+
+.selectDropdown {
+    position: absolute;
+    list-style: none;
+    width: 100%;
+    box-shadow: 0 10px 25px #0002;
+    background-color: #ffd592;
+    border: #874310 solid 1px;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    transition: 0.5s ease;
+    transform: scaleY(0);
+    z-index: 50;
+}
+
+.selectDropdown li {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    gap: 1em;
+    align-items: center;
+}
+
+.selectDropdown li label {
+    width: 100%;
+    padding: 8px 10px;
+    cursor: pointer;
+    display: flex;
+    color: #000;
+    gap: 0.5em;
+    align-items: center;
+}
+
+.selectDropdown li label a {
+    color: #000;
+    font-size: 0.5em;
+}
+
+.selectDropdown::-webkit-scrollbar {
+    width: 7px;
+}
+
+.selectDropdown::-webkit-scrollbar-track {
+    background: #ffd592;
+    border-radius: 25px;
+}
+
+.selectDropdown::-webkit-scrollbar-thumb {
+    background: #ffd592;
+    border-radius: 25px;
+}
+
+.selectDropdown li:hover label,
+.selectDropdown input:checked ~ label {
+    background-color: #e5bf82;
+}
+
+.selectDropdown input:focus ~ label {
+    background-color: #e5bf82;
+}
+
+.selectDropdown input[type="radio"] {
+    position: absolute;
+    left: 0;
+    opacity: 0;
+}

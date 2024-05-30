@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <link rel="shortcut icon" href="#">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/main")
+</head>
+<body>
+    
+    <div id="renderBody">
+        @RenderBody()
+    </div>
+
+    <div id="snackBar">
+        <a id="sB_Content"></a>
+    </div>
+
+    <div id="alert"></div>
+</body>
+</html>

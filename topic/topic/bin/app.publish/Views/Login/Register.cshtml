@@ -1,0 +1,78 @@
+﻿<main>
+    <script>
+        window.onload = () => {
+            var status = parseInt(@TempData["Status"])
+            switch (status) {
+                case 2:
+                    newAlert({
+                        content: "Username is already exist"
+                    })
+                    break;
+                case 3:
+                    newAlert({
+                        content: "Incorrect format for Indetity Number"
+                    })
+                    break;
+                case 4:
+                    newAlert({
+                        content: "Indetity Number is already exist"
+                    })
+                    break;
+                case 5:
+                    newAlert({
+                        content: "Password isn't equals to Confirm Password"
+                    })
+                    break;
+                case 6:
+                    newAlert({
+                        content: "Exist blank fields"
+                    })
+                    break;
+                case 7:
+                    newAlert({
+                        content: "The field can only contain numbers and letters"
+                    })
+                    break;
+                case 8:
+                    newAlert({
+                        content: "The field length cannot more than 20 characters"
+                    })
+                    break;
+            }
+        }
+    </script>
+    <div id="content">
+        <form action="/Login/Register" method="post">
+            @Html.AntiForgeryToken()
+            <div id="dialog">
+                <span class="title"><b>Sign Up</b></span>
+                <div class="inputBox">
+                    <input id="Username" class="input" placeholder=" " type="text" name="Username" autocomplete="off">
+                    <label class="name">Account</label>
+                    <i></i>
+                </div>
+                <div class="inputBox">
+                    <input id="IdentityNumber" class="input" placeholder=" " type="text" name="IdentityNumber" autocomplete="off">
+                    <label class="name">Identity Number</label>
+                    <i></i>
+                </div>
+                <div class="inputBox">
+                    <input id="Password" class="input" placeholder=" " type="password" name="Password" autocomplete="off" id="password">
+                    <label class="name">Password</label>
+                    <i></i>
+                </div>
+                <div class="inputBox">
+                    <input id="PasswordConfirm" class="input" placeholder=" " type="password" name="PasswordConfirm" autocomplete="off" id="password">
+                    <label class="name">Password Confirm</label>
+                    <i></i>
+                </div>
+                <div class="submit">
+                    <button type="submit">Create</button>
+                    <div>
+                        <a href="/Login/Login">Back to Sign In</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
