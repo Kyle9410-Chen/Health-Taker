@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">HealthTaker</string>
+    <string name="title_activity_start">StartActivity</string>
+    <string name="title_activity_create_account">CreateAccountActivity</string>
+    <string name="title_activity_sign_in">SignInActivity</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_select_user">SelectUserActivity</string>
+</resources>
